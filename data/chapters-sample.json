@@ -1,0 +1,112 @@
+[
+    {
+        "id": 1,
+        "name": "Al-Fatihah",
+        "transliteration": "Al-Faatihah",
+        "translation": "The Opener",
+        "type": "meccan",
+        "total_verses": 7,
+        "verses": [
+            {
+                "number": 1,
+                "text": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+            },
+            {
+                "number": 2,
+                "text": "ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَـٰلَمِينَ"
+            },
+            {
+                "number": 3,
+                "text": "ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+            },
+            {
+                "number": 4,
+                "text": "مَـٰلِكِ يَوْمِ ٱلدِّينِ"
+            },
+            {
+                "number": 5,
+                "text": "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ"
+            },
+            {
+                "number": 6,
+                "text": "ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ"
+            },
+            {
+                "number": 7,
+                "text": "صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّآلِّينَ"
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "Al-Baqarah",
+        "transliteration": "Al-Baqarah",
+        "translation": "The Cow",
+        "type": "medinan",
+        "total_verses": 286
+    },
+    {
+        "id": 3,
+        "name": "Ali 'Imran",
+        "transliteration": "Aal-i-Imraan",
+        "translation": "Family of Imran",
+        "type": "medinan",
+        "total_verses": 200
+    },
+    {
+        "id": 4,
+        "name": "An-Nisa",
+        "transliteration": "An-Nisaa",
+        "translation": "The Women",
+        "type": "medinan",
+        "total_verses": 176
+    },
+    {
+        "id": 5,
+        "name": "Al-Ma'idah",
+        "transliteration": "Al-Maaida",
+        "translation": "The Table Spread",
+        "type": "medinan",
+        "total_verses": 120
+    },
+    {
+        "id": 6,
+        "name": "Al-An'am",
+        "transliteration": "Al-An'aam",
+        "translation": "The Cattle",
+        "type": "meccan",
+        "total_verses": 165
+    },
+    {
+        "id": 7,
+        "name": "Al-A'raf",
+        "transliteration": "Al-A'raaf",
+        "translation": "The Heights",
+        "type": "meccan",
+        "total_verses": 206
+    },
+    {
+        "id": 8,
+        "name": "Al-Anfal",
+        "transliteration": "Al-Anfaal",
+        "translation": "The Spoils of War",
+        "type": "medinan",
+        "total_verses": 75
+    },
+    {
+        "id": 9,
+        "name": "At-Tawbah",
+        "transliteration": "At-Tawba",
+        "translation": "The Repentance",
+        "type": "medinan",
+        "total_verses": 129
+    },
+    {
+        "id": 10,
+        "name": "Yunus",
+        "transliteration": "Yunus",
+        "translation": "Jonah",
+        "type": "meccan",
+        "total_verses": 109
+    }
+]
