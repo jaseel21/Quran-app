@@ -1,7 +1,7 @@
 export const COLORS = {
   // Primary Colors - Islamic Green & Gold
-  primary: '#1B5E3F',
-  primaryLight: '#2D8659',
+  primary: '#8f7a40ff',
+  primaryLight: '#807728ff',
   primaryDark: '#0F3D28',
   
   // Accent Colors

@@ -227,9 +227,13 @@ export default function HomeScreen() {
       <FlatList
         data={filteredData as any[]}
         renderItem={(activeTab === 'surah' ? renderSurahItem : renderJuzItem) as any}
-        keyExtractor={(item: any) =>
-          activeTab === 'surah' ? item.id.toString() : item.juz_number.toString()
-        }
+        keyExtractor={(item: any) => {
+          if (activeTab === 'surah') {
+            return item?.id?.toString() || String(Math.random());
+          } else {
+            return item?.juz_number?.toString() || item?.id?.toString() || String(Math.random());
+          }
+        }}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
       />
