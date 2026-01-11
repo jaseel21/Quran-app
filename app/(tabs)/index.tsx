@@ -100,7 +100,7 @@ export default function HomeScreen() {
             {item.name_simple}
           </Text>
           <Text style={styles.surahInfo}>
-            {item.translated_name.name} • {item.verses_count} Verses
+            {item.translated_name?.name || item.name_simple} • {item.verses_count} Verses
           </Text>
         </View>
       </View>

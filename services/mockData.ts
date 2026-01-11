@@ -67,7 +67,7 @@ export const MOCK_SURAHS = [
         bismillah_pre: true,
         name_simple: 'Al-Ma\'idah',
         name_complex: 'Al-Mā'idah',
-    name_arabic: 'المائدة',
+        name_arabic: 'المائدة',
         verses_count: 120,
         pages: [106, 127],
         translated_name: {

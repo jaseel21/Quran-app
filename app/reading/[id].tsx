@@ -1,6 +1,8 @@
 import { COLORS, SHADOWS, SIZES } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { getAudioUrl, getVersesByJuz, getVersesBySurah, Verse } from '@/services/api';
+import { AudioManager } from '@/services/AudioManager';
+import { Verse } from '@/services/api';
+import { getCompleteVersesByJuz, getCompleteVersesBySurah, getSurahInfo } from '@/services/quranData';
 import {
     addBookmark,
     addFavorite,
@@ -20,7 +22,7 @@ import {
     StyleSheet,
     Text,
     TouchableOpacity,
-    View,
+    View
 } from 'react-native';
 
 export default function ReadingScreen() {
@@ -35,6 +37,10 @@ export default function ReadingScreen() {
     const [sound, setSound] = useState<Audio.Sound | null>(null);
     const [favoriteVerses, setFavoriteVerses] = useState<Set<string>>(new Set());
     const [bookmarkedVerses, setBookmarkedVerses] = useState<Set<string>>(new Set());
+    const [selectedVerse, setSelectedVerse] = useState<Verse | null>(null);
+    const [popupVisible, setPopupVisible] = useState(false);
+    const [surahInfo, setSurahInfo] = useState<any>(null);
+    const [currentPage, setCurrentPage] = useState(0);
 
     useEffect(() => {
         loadVerses();
@@ -51,9 +57,11 @@ export default function ReadingScreen() {
             let data: Verse[];
 
             if (type === 'surah') {
-                data = await getVersesBySurah(Number(id));
+                data = getCompleteVersesBySurah(Number(id));
+                const info = getSurahInfo(Number(id));
+                setSurahInfo(info);
             } else {
-                data = await getVersesByJuz(Number(id));
+                data = getCompleteVersesByJuz(Number(id));
             }
 
             setVerses(data);
@@ -92,10 +100,13 @@ export default function ReadingScreen() {
             }
 
             setPlayingVerse(verse.verse_key);
-            const audioUrl = getAudioUrl(verse.verse_key);
+
+            // USE NEW AUDIO MANAGER
+            const audioUri = await AudioManager.getAudioUri(verse.verse_key);
+            console.log('Playing audio from:', audioUri);
 
             const { sound: newSound } = await Audio.Sound.createAsync(
-                { uri: audioUrl },
+                { uri: audioUri },
                 { shouldPlay: true }
             );
 
@@ -166,6 +177,20 @@ export default function ReadingScreen() {
         }
     };
 
+    const downloadAudio = async (verse: Verse) => {
+        try {
+            const uri = await AudioManager.downloadVerse(verse.verse_key);
+            if (uri) {
+                Alert.alert('Success', 'Audio downloaded for offline use');
+            } else {
+                Alert.alert('Error', 'Failed to download audio');
+            }
+        } catch (error) {
+            console.error('Error downloading:', error);
+            Alert.alert('Error', 'Failed to download');
+        }
+    };
+
     const renderVerseItem = ({ item }: { item: Verse }) => {
         const isPlaying = playingVerse === item.verse_key;
         const isFav = favoriteVerses.has(item.verse_key);
@@ -198,6 +223,16 @@ export default function ReadingScreen() {
                                 name={isFav ? 'heart' : 'heart-outline'}
                                 size={22}
                                 color={isFav ? COLORS.error : COLORS.textLight}
+                            />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => downloadAudio(item)}
+                            style={styles.actionButton}
+                        >
+                            <Ionicons
+                                name="download-outline"
+                                size={22}
+                                color={COLORS.textLight}
                             />
                         </TouchableOpacity>
                     </View>
@@ -258,6 +293,20 @@ export default function ReadingScreen() {
                 keyExtractor={(item) => item.verse_key}
                 contentContainerStyle={styles.listContent}
                 showsVerticalScrollIndicator={false}
+                ListEmptyComponent={
+                    <View style={[styles.centerContent, { flex: 1, marginTop: 50 }]}>
+                        <Text style={[styles.loadingText, isDark && styles.textDark]}>No verses found</Text>
+                    </View>
+                }
+                ListHeaderComponent={
+                    // Only show Bismillah for Surahs (except 1 and 9)
+                    // Use string comparison for id as params values are strings
+                    (type === 'surah' && id !== '1' && id !== '9') ? (
+                        <View style={styles.bismillahContainer}>
+                            <Text style={styles.bismillahText}>بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ</Text>
+                        </View>
+                    ) : null
+                }
             />
         </View>
     );
@@ -348,7 +397,23 @@ const styles = StyleSheet.create({
         fontSize: SIZES.base,
         color: COLORS.textLight,
     },
+    bismillahContainer: {
+        alignItems: 'center',
+        paddingVertical: SIZES.spacing.md,
+        marginTop: SIZES.spacing.sm,
+    },
+    bismillahText: {
+        fontSize: 26,
+        fontFamily: 'Uthmani',
+        color: '#000',
+    },
     textDark: {
         color: COLORS.textDark,
+    },
+    pagerView: {
+        flex: 1,
+    },
+    pageContainer: {
+        flex: 1,
     },
 });
