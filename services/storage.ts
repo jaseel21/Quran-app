@@ -13,6 +13,8 @@ export interface Favorite {
 export interface Bookmark {
     verseKey: string;
     surahName: string;
+    surahArabicName: string; // New field
+    verseText: string;       // New field
     timestamp: number;
 }
 

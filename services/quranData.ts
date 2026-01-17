@@ -152,7 +152,8 @@ export const getSurahInfo = (surahId: number) => {
             id: surah.id,
             name: surah.transliteration,
             arabicName: surah.name,
-            translation: '', // Not available in this JSON
+            englishName: surah.transliteration, // Fallback since no distinct english translation in this JSON
+            translation: '',
             type: surah.type,
             versesCount: surah.total_verses,
         };

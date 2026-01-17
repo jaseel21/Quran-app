@@ -59,9 +59,16 @@ export default function BookmarksScreen() {
 
     const handlePressBookmark = (bookmark: Bookmark) => {
         // verseKey format is "surahId:verseId"
-        // We want to navigate to the Surah view, potentially scrolling to that verse (future improvement)
         const [surahId] = bookmark.verseKey.split(':');
-        router.push(`/reading/${surahId}?type=surah`);
+
+        // Pass initialScrollToVerse param to jump to the specific verse
+        router.push({
+            pathname: `/reading/${surahId}`,
+            params: {
+                type: 'surah',
+                initialScrollToVerse: bookmark.verseKey
+            }
+        });
     };
 
     const renderItem = ({ item }: { item: Bookmark }) => (
@@ -75,9 +82,19 @@ export default function BookmarksScreen() {
                     <View style={[styles.iconContainer, isDark && styles.iconContainerDark]}>
                         <Ionicons name="bookmark" size={20} color={COLORS.accent} />
                     </View>
-                    <Text style={[styles.surahName, isDark && styles.textDark]}>
-                        {item.surahName}
-                    </Text>
+                    <View style={{ flex: 1 }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <Text style={[styles.surahName, isDark && styles.textDark]}>
+                                {item.surahName.split(':')[0]}
+                            </Text>
+                            <Text style={[styles.arabicName, isDark && styles.textDark]}>
+                                {item.surahArabicName}
+                            </Text>
+                        </View>
+                        <Text style={[styles.verseText, isDark && styles.textLight]} numberOfLines={1}>
+                            {item.verseText}
+                        </Text>
+                    </View>
                 </View>
                 <Text style={styles.dateText}>
                     Saved on {new Date(item.timestamp).toLocaleDateString()}
@@ -196,10 +213,26 @@ const styles = StyleSheet.create({
     textDark: {
         color: COLORS.textDark,
     },
-    dateText: {
-        fontSize: SIZES.sm,
+    textLight: {
         color: COLORS.textLight,
-        marginLeft: 40, // Align with text start (32 icon + 8 margin)
+    },
+    arabicName: {
+        fontSize: SIZES.lg,
+        fontFamily: 'Uthmani', // Assuming this font is available
+        color: COLORS.text,
+    },
+    verseText: {
+        fontSize: SIZES.arabicBase,
+        color: COLORS.text,
+        textAlign: 'right',
+        marginTop: 4,
+        marginRight: 8,
+    },
+    dateText: {
+        fontSize: SIZES.xs,
+        color: COLORS.textLight,
+        marginLeft: 40,
+        marginTop: 4
     },
     removeButton: {
         padding: SIZES.spacing.sm,

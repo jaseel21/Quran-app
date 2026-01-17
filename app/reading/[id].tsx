@@ -62,6 +62,7 @@ export default function ReadingScreen() {
     // Refs to track boundaries
     const lastFetchedSurahRef = useRef<number>(Number(id));
     const firstFetchedSurahRef = useRef<number>(Number(id));
+    const flatListRef = useRef<FlatList>(null);
 
     const [loading, setLoading] = useState(true);
     const [playingVerse, setPlayingVerse] = useState<string | null>(null);
@@ -130,6 +131,19 @@ export default function ReadingScreen() {
             setListData(items);
             checkInteractions(items);
 
+            // Handle Deep Linking / Auto-scroll
+            const initialScrollToVerse = params.initialScrollToVerse as string;
+            if (initialScrollToVerse) {
+                // Find index
+                const index = items.findIndex(item => item.type === 'verse' && item.data.verse_key === initialScrollToVerse);
+                if (index !== -1) {
+                    // Slight delay to ensure content is rendered
+                    // We remove LayoutAnimation/getItemLayout dependence for accuracy
+                    setTimeout(() => {
+                        flatListRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0 });
+                    }, 500);
+                }
+            }
         } catch (error) {
             console.error('Error loading initial content:', error);
             Alert.alert('Error', 'Failed to load content');
@@ -351,9 +365,19 @@ export default function ReadingScreen() {
                     return newSet;
                 });
             } else {
+                // Get Surah Info for Arabic Name
+                const surahId = verse.juz_number ? verse.juz_number : parseInt(verseKey.split(':')[0]);
+                // Note: verse.juz_number is the JUZ number, not Surah ID. 
+                // We should parse surahId from the key or check context. 
+                // Using explicit parsing from verse_key which is reliable "surah:verse".
+                const actualSurahId = parseInt(verseKey.split(':')[0]);
+                const info = getSurahInfo(actualSurahId);
+
                 await addBookmark({
                     verseKey,
-                    surahName: `Verse ${verse.verse_number}`,
+                    surahName: `Surah ${info?.name || actualSurahId} : Verse ${verse.verse_number}`,
+                    surahArabicName: info?.arabicName || '',
+                    verseText: verse.text_uthmani,
                     timestamp: Date.now(),
                 });
                 setBookmarkedVerses(prev => new Set(prev).add(verseKey));
@@ -453,12 +477,18 @@ export default function ReadingScreen() {
                 }}
             />
             <FlatList
+                ref={flatListRef}
                 data={listData}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => {
-                    // Use a unique key composition
                     if (item.type === 'verse') return item.data.verse_key;
                     return `header-${item.surahNumber}`;
+                }}
+                onScrollToIndexFailed={info => {
+                    const wait = new Promise(resolve => setTimeout(resolve, 500));
+                    wait.then(() => {
+                        flatListRef.current?.scrollToIndex({ index: info.index, animated: true, viewPosition: 0 });
+                    });
                 }}
                 contentContainerStyle={styles.listContent}
                 showsVerticalScrollIndicator={false}
